@@ -1,0 +1,431 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  #chat-root {
+    font-family: 'Barlow', sans-serif;
+    background: #0a0e1a;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 580px;
+    border: 1px solid #1e2a3a;
+  }
+
+  #chat-header {
+    background: linear-gradient(135deg, #0d1f3c, #112240);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #1e3a5f;
+  }
+
+  .logo-circle {
+    width: 42px; height: 42px;
+    background: #c8a84b;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #0a0e1a;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .header-text h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: #e8dfc8;
+    letter-spacing: 0.5px;
+  }
+
+  .header-text p {
+    font-size: 12px; color: #5a8a6a;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    background: #4caf6a;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  #chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: #1e3a5f transparent;
+  }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    animation: slideIn 0.25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.bot { flex-direction: row; }
+  .msg.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 30px; height: 30px;
+    background: #c8a84b;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: #0a0e1a;
+    flex-shrink: 0;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .bubble {
+    max-width: 78%;
+    padding: 11px 15px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+
+  .msg.bot .bubble {
+    background: #112240;
+    color: #d4cfc4;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #1e3a5f;
+  }
+
+  .msg.user .bubble {
+    background: #c8a84b;
+    color: #0a0e1a;
+    font-weight: 500;
+    border-bottom-right-radius: 4px;
+  }
+
+  .options-box {
+    background: #0d1a2e;
+    border: 1px solid #1e3a5f;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 82%;
+    margin-left: 40px;
+    animation: slideIn 0.3s ease;
+  }
+
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 15px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #1a2a40;
+    color: #a8c8e8;
+    font-size: 14px;
+  }
+
+  .option-item:last-child { border-bottom: none; }
+
+  .option-item:hover {
+    background: #1a3050;
+    color: #e8dfc8;
+  }
+
+  .opt-num {
+    background: #c8a84b;
+    color: #0a0e1a;
+    font-weight: 700;
+    font-size: 12px;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  #chat-input-area {
+    padding: 14px 16px;
+    background: #0d1320;
+    border-top: 1px solid #1e2a3a;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #chat-input {
+    flex: 1;
+    background: #112240;
+    border: 1px solid #1e3a5f;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #d4cfc4;
+    font-size: 14px;
+    font-family: 'Barlow', sans-serif;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  #chat-input:focus { border-color: #c8a84b; }
+  #chat-input::placeholder { color: #3a5a7a; }
+
+  #send-btn {
+    background: #c8a84b;
+    border: none;
+    border-radius: 10px;
+    width: 42px; height: 42px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+
+  #send-btn:hover { background: #d4b85a; }
+  #send-btn:active { transform: scale(0.95); }
+
+  #send-btn svg { width: 18px; height: 18px; fill: #0a0e1a; }
+
+  .typing {
+    display: flex; align-items: center; gap: 5px;
+    padding: 10px 14px;
+    background: #112240;
+    border: 1px solid #1e3a5f;
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+  }
+
+  .dot { width: 6px; height: 6px; background: #c8a84b; border-radius: 50%; animation: bounce 1s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-4px); opacity: 1; }
+  }
+</style>
+
+<div id="chat-root">
+  <div id="chat-header">
+    <div class="logo-circle">AUTO</div>
+    <div class="header-text">
+      <h2>AutoPrime Consórcio</h2>
+      <p><span class="status-dot"></span> Atendente online agora</p>
+    </div>
+  </div>
+
+  <div id="chat-messages"></div>
+
+  <div id="chat-input-area">
+    <input id="chat-input" type="text" placeholder="Digite um número ou mensagem..." autocomplete="off" />
+    <button id="send-btn">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const msgs = document.getElementById('chat-messages');
+const input = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+
+const MENU_PRINCIPAL = [
+  { num: '1', label: 'Ver planos de consórcio' },
+  { num: '2', label: 'Simular parcela' },
+  { num: '3', label: 'Carros disponíveis' },
+  { num: '4', label: 'Como funciona o consórcio' },
+  { num: '5', label: 'Falar com um consultor' },
+];
+
+const PLANOS = [
+  { num: '1', label: 'Plano Econômico — até R$ 40.000' },
+  { num: '2', label: 'Plano Standard — até R$ 80.000' },
+  { num: '3', label: 'Plano Premium — até R$ 150.000' },
+  { num: '4', label: '← Voltar ao menu principal' },
+];
+
+const CARROS = [
+  { num: '1', label: 'Hatch (Ônix, HB20, Polo...)' },
+  { num: '2', label: 'Sedan (Corolla, Civic, Virtus...)' },
+  { num: '3', label: 'SUV (Creta, T-Cross, Compass...)' },
+  { num: '4', label: 'Picape (S10, Hilux, Ranger...)' },
+  { num: '5', label: '← Voltar ao menu principal' },
+];
+
+let state = 'menu';
+let simStep = 0;
+let simData = {};
+
+function addMsg(who, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  const av = who === 'bot'
+    ? `<div class="avatar">AT</div>`
+    : `<div class="avatar" style="background:#1a3050;color:#a8c8e8;">VC</div>`;
+  div.innerHTML = `${who === 'bot' ? av : ''}<div class="bubble">${text}</div>${who === 'user' ? av : ''}`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addOptions(opts) {
+  const box = document.createElement('div');
+  box.className = 'options-box';
+  opts.forEach(o => {
+    const item = document.createElement('div');
+    item.className = 'option-item';
+    item.innerHTML = `<span class="opt-num">${o.num}</span><span>${o.label}</span>`;
+    item.onclick = () => handleInput(o.num);
+    box.appendChild(item);
+  });
+  msgs.appendChild(box);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function typing(cb) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+  wrap.innerHTML = `<div class="avatar">AT</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => { wrap.remove(); cb(); }, 700);
+}
+
+function showMenu() {
+  state = 'menu';
+  typing(() => {
+    addMsg('bot', 'Como posso te ajudar? Digite o número da opção desejada:');
+    addOptions(MENU_PRINCIPAL);
+  });
+}
+
+function handleInput(val) {
+  val = val.trim();
+  if (!val) return;
+  addMsg('user', val);
+
+  if (state === 'menu') {
+    if (val === '1') {
+      state = 'planos';
+      typing(() => {
+        addMsg('bot', 'Ótimo! Temos 3 planos disponíveis. Escolha o que melhor se encaixa no seu perfil:');
+        addOptions(PLANOS);
+      });
+    } else if (val === '2') {
+      state = 'sim1';
+      simStep = 0;
+      simData = {};
+      typing(() => addMsg('bot', 'Vou te ajudar a simular. 💡\n\nQual o valor do carro que você deseja? (ex: 80000)'));
+    } else if (val === '3') {
+      state = 'carros';
+      typing(() => {
+        addMsg('bot', 'Trabalhamos com diversas categorias. Selecione o tipo de veículo:');
+        addOptions(CARROS);
+      });
+    } else if (val === '4') {
+      typing(() => {
+        addMsg('bot', 'O consórcio é uma forma de compra planejada em grupo.\n\n✅ Sem juros — só taxa de administração\n✅ Parcelas fixas e acessíveis\n✅ Contemplação por sorteio ou lance\n✅ Prazo de 36 a 100 meses\n\nVocê pode ser contemplado já no 1º mês!');
+        setTimeout(() => showMenu(), 300);
+      });
+    } else if (val === '5') {
+      typing(() => {
+        addMsg('bot', 'Certo! Um de nossos consultores entrará em contato em breve. 📞\n\nTambém pode nos contatar:\n📱 WhatsApp: (11) 99999-9999\n📧 contato@autoprime.com.br\n\nHorário: Seg–Sex das 8h às 18h');
+      });
+    } else {
+      typing(() => {
+        addMsg('bot', 'Opção não reconhecida. Por favor, escolha um número do menu:');
+        addOptions(MENU_PRINCIPAL);
+      });
+    }
+  } else if (state === 'planos') {
+    if (val === '1') {
+      typing(() => {
+        addMsg('bot', '🚗 Plano Econômico — até R$ 40.000\n\n• Parcelas a partir de R$ 350/mês\n• Prazo: 60 meses\n• Taxa adm: 15% no total\n• Sorteios mensais garantidos\n\nPerfeito para hatchbacks e carros de entrada!');
+        setTimeout(() => showMenu(), 400);
+      });
+    } else if (val === '2') {
+      typing(() => {
+        addMsg('bot', '🚘 Plano Standard — até R$ 80.000\n\n• Parcelas a partir de R$ 680/mês\n• Prazo: 72 meses\n• Taxa adm: 14% no total\n• Lance mínimo: 10% do crédito\n\nIdeal para sedãs e SUVs compactos!');
+        setTimeout(() => showMenu(), 400);
+      });
+    } else if (val === '3') {
+      typing(() => {
+        addMsg('bot', '🏆 Plano Premium — até R$ 150.000\n\n• Parcelas a partir de R$ 1.150/mês\n• Prazo: 84 meses\n• Taxa adm: 13% no total\n• Prioridade em lances\n\nSUVs, picapes e veículos de alto padrão!');
+        setTimeout(() => showMenu(), 400);
+      });
+    } else if (val === '4') {
+      showMenu();
+    } else {
+      typing(() => { addMsg('bot', 'Escolha entre 1 e 4:'); addOptions(PLANOS); });
+    }
+  } else if (state === 'carros') {
+    const info = {
+      '1': 'Hatchbacks disponíveis:\n• Chevrolet Ônix\n• Hyundai HB20\n• Volkswagen Polo\n• Fiat Argo\n\nFaixa de crédito: R$ 55.000 a R$ 80.000',
+      '2': 'Sedãs disponíveis:\n• Toyota Corolla\n• Honda Civic\n• Volkswagen Virtus\n• Nissan Sentra\n\nFaixa de crédito: R$ 80.000 a R$ 130.000',
+      '3': 'SUVs disponíveis:\n• Hyundai Creta\n• Volkswagen T-Cross\n• Jeep Compass\n• Toyota Corolla Cross\n\nFaixa de crédito: R$ 100.000 a R$ 150.000',
+      '4': 'Picapes disponíveis:\n• Chevrolet S10\n• Toyota Hilux\n• Ford Ranger\n• Mitsubishi L200\n\nFaixa de crédito: R$ 120.000 a R$ 200.000',
+    };
+    if (info[val]) {
+      typing(() => {
+        addMsg('bot', '🚙 ' + info[val]);
+        setTimeout(() => showMenu(), 400);
+      });
+    } else if (val === '5') {
+      showMenu();
+    } else {
+      typing(() => { addMsg('bot', 'Escolha entre 1 e 5:'); addOptions(CARROS); });
+    }
+  } else if (state === 'sim1') {
+    const v = parseFloat(val.replace(/\D/g, ''));
+    if (!v || v < 10000) {
+      typing(() => addMsg('bot', 'Por favor, informe um valor válido (mínimo R$ 10.000). Ex: 80000'));
+    } else {
+      simData.valor = v;
+      state = 'sim2';
+      typing(() => addMsg('bot', `Valor: R$ ${v.toLocaleString('pt-BR')}. ✅\n\nEm quantos meses deseja pagar?\n1 — 60 meses\n2 — 72 meses\n3 — 84 meses`));
+    }
+  } else if (state === 'sim2') {
+    const prazos = { '1': 60, '2': 72, '3': 84 };
+    if (!prazos[val]) {
+      typing(() => addMsg('bot', 'Digite 1, 2 ou 3 para escolher o prazo.'));
+    } else {
+      simData.prazo = prazos[val];
+      const taxa = 0.14;
+      const total = simData.valor * (1 + taxa);
+      const parcela = Math.round(total / simData.prazo);
+      state = 'menu';
+      typing(() => {
+        addMsg('bot', `📊 Resultado da sua simulação:\n\n💰 Crédito: R$ ${simData.valor.toLocaleString('pt-BR')}\n📅 Prazo: ${simData.prazo} meses\n📄 Taxa adm: 14%\n💳 Parcela estimada: R$ ${parcela.toLocaleString('pt-BR')}/mês\n\n⚠️ Valores sujeitos à aprovação. Sem juros!`);
+        setTimeout(() => showMenu(), 500);
+      });
+    }
+  }
+
+  input.value = '';
+}
+
+sendBtn.onclick = () => handleInput(input.value);
+input.onkeydown = e => { if (e.key === 'Enter') handleInput(input.value); };
+
+setTimeout(() => {
+  addMsg('bot', 'Olá! 👋 Seja bem-vindo à AutoPrime Consórcio!\n\nSou seu assistente virtual e estou aqui para te ajudar a conquistar seu próximo veículo com as melhores condições do mercado.');
+  setTimeout(() => showMenu(), 800);
+}, 400);
+</script>
